@@ -136,6 +136,20 @@ module Vgpu = struct
 	}
 end
 
+module Usb = struct
+	type id = string * string
+	type t = {
+		id: id;
+		hostbus: string;
+		hostaddr: string;
+		sn: string;
+	}
+	type state = {
+		active: bool;
+		plugged: bool;
+	}
+end
+
 module Vm = struct
   include Xenops_types.Vm
 end
@@ -335,6 +349,7 @@ module Dynamic = struct
 		| Vif of Vif.id
 		| Pci of Pci.id
 		| Vgpu of Vgpu.id
+		| Usb of Usb.id
 		| Task of Task.id
 	type barrier = int * (id list)
 	type t =
@@ -343,6 +358,7 @@ module Dynamic = struct
 		| Vif_t of Vif.id * ((Vif.t * Vif.state) option)
 		| Pci_t of Pci.id * ((Pci.t * Pci.state) option)
 		| Vgpu_t of Vgpu.id * ((Vgpu.t * Vgpu.state) option)
+	    | Usb_t of Usb.id * ((Usb.t * Usb.state) option)
 		| Task_t of Task.id * (Task.t option)
 end
 
@@ -453,6 +469,15 @@ module VBD = struct
 	external stat: debug_info -> Vbd.id -> (Vbd.t * Vbd.state) = ""
 	external list: debug_info -> Vm.id -> (Vbd.t * Vbd.state) list  = ""
 	external remove: debug_info -> Vbd.id -> unit = ""
+end
+
+module USB = struct
+	external add: debug_info -> Usb.t -> Usb.id = ""
+	external insert: debug_info -> Usb.id -> Task.id = ""
+	external eject: debug_info -> Usb.id -> Task.id = ""
+	external stat: debug_info -> Usb.id -> (Usb.t * Usb.state) = ""
+	external list: debug_info -> Vm.id -> (Usb.t * Usb.state) list = ""
+	external remove: debug_info -> Usb.id -> unit = ""
 end
 
 module VIF = struct
