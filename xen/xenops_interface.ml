@@ -130,6 +130,7 @@ module Vgpu = struct
 	}
 
 	type state = {
+        active: bool;
 		plugged: bool;
 		emulator_pid: int option;
 	}
